@@ -686,6 +686,51 @@
             'SandiKotakI', 'SandiMagi', 'SandiRumput'
         ];
 
+        // Storage Wrapper - works with both localStorage and window.storage
+        const Storage = {
+            async get(key, shared = false) {
+                try {
+                    if (typeof window.storage !== 'undefined') {
+                        return await window.storage.get(key, shared);
+                    } else {
+                        const value = localStorage.getItem(key);
+                        return value ? { key, value, shared } : null;
+                    }
+                } catch (error) {
+                    console.error('Storage get error:', error);
+                    return null;
+                }
+            },
+            
+            async set(key, value, shared = false) {
+                try {
+                    if (typeof window.storage !== 'undefined') {
+                        return await window.storage.set(key, value, shared);
+                    } else {
+                        localStorage.setItem(key, value);
+                        return { key, value, shared };
+                    }
+                } catch (error) {
+                    console.error('Storage set error:', error);
+                    return null;
+                }
+            },
+            
+            async delete(key, shared = false) {
+                try {
+                    if (typeof window.storage !== 'undefined') {
+                        return await window.storage.delete(key, shared);
+                    } else {
+                        localStorage.removeItem(key);
+                        return { key, deleted: true, shared };
+                    }
+                } catch (error) {
+                    console.error('Storage delete error:', error);
+                    return null;
+                }
+            }
+        };
+
         let currentMode = null;
         let selectedFonts = [];
         let selectedKeyword = null;
@@ -822,7 +867,7 @@
             };
 
             try {
-                await window.storage.set(`room:${roomCode}`, JSON.stringify(roomData), true);
+                await Storage.set(`room:${roomCode}`, JSON.stringify(roomData), true);
                 currentRoomCode = roomCode;
                 displayOperatorRoom(roomCode, roomData);
             } catch (error) {
@@ -865,14 +910,14 @@
             if (!currentRoomCode) return;
 
             try {
-                const result = await window.storage.get(`room:${currentRoomCode}`, true);
+                const result = await Storage.get(`room:${currentRoomCode}`, true);
                 if (!result) return;
 
                 const roomData = JSON.parse(result.value);
                 roomData.timerStarted = true;
                 roomData.timerStartTime = Date.now();
                 
-                await window.storage.set(`room:${currentRoomCode}`, JSON.stringify(roomData), true);
+                await Storage.set(`room:${currentRoomCode}`, JSON.stringify(roomData), true);
 
                 let timeLeft = roomData.timer;
                 timerInterval = setInterval(async () => {
@@ -889,11 +934,11 @@
                         display.textContent = '⏰ Waktu Habis!';
                         display.classList.remove('warning');
                         
-                        const result = await window.storage.get(`room:${currentRoomCode}`, true);
+                        const result = await Storage.get(`room:${currentRoomCode}`, true);
                         if (result) {
                             const roomData = JSON.parse(result.value);
                             roomData.timerEnded = true;
-                            await window.storage.set(`room:${currentRoomCode}`, JSON.stringify(roomData), true);
+                            await Storage.set(`room:${currentRoomCode}`, JSON.stringify(roomData), true);
                         }
                     }
                 }, 1000);
@@ -907,13 +952,13 @@
             if (!currentRoomCode) return;
 
             try {
-                const result = await window.storage.get(`room:${currentRoomCode}`, true);
+                const result = await Storage.get(`room:${currentRoomCode}`, true);
                 if (!result) return;
 
                 const roomData = JSON.parse(result.value);
                 roomData.showAnswer = true;
                 
-                await window.storage.set(`room:${currentRoomCode}`, JSON.stringify(roomData), true);
+                await Storage.set(`room:${currentRoomCode}`, JSON.stringify(roomData), true);
 
                 const answerDiv = document.getElementById('operatorAnswerDisplay');
                 answerDiv.innerHTML = `
@@ -935,7 +980,7 @@
 
             if (confirm('⚠️ Apakah Anda yakin ingin menutup room ini?')) {
                 try {
-                    await window.storage.delete(`room:${currentRoomCode}`, true);
+                    await Storage.delete(`room:${currentRoomCode}`, true);
                     if (timerInterval) clearInterval(timerInterval);
                     alert('✅ Room berhasil ditutup!');
                     resetOperator();
@@ -972,7 +1017,7 @@
             }
 
             try {
-                const result = await window.storage.get(`room:${roomCode}`, true);
+                const result = await Storage.get(`room:${roomCode}`, true);
                 
                 if (!result) {
                     alert('❌ Room tidak ditemukan! Periksa kembali kode room.');
@@ -1075,7 +1120,7 @@
                 }
 
                 try {
-                    const result = await window.storage.get(`room:${currentRoomCode}`, true);
+                    const result = await Storage.get(`room:${currentRoomCode}`, true);
                     
                     if (!result) {
                         clearInterval(userPollingInterval);
