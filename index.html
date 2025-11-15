@@ -1,79 +1,84 @@
 <!DOCTYPE html>
 <html lang="id">
-<!-- Tambahkan sebelum </head> -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Soal Sandi Pramuka - Multiplayer</title>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <!-- PDF Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
         @font-face {
             font-family: 'SandiAnalog';
-            src: url('https://cdn.jsdelivr.net/gh/renarpage/fontsandi@main/SandiAnalog-Regular.ttf') format('truetype');
+            src: url('https://cdn.jsdelivr.net/gh/renarpage/ragamsandi@main/SandiAnalog-Regular.ttf') format('truetype');
             font-display: block;
         }
 
         @font-face {
             font-family: 'SandiAngka';
-            src: url('https://cdn.jsdelivr.net/gh/renarpage/fontsandi@main/SandiAngka-Regular.ttf') format('truetype');
+            src: url('https://cdn.jsdelivr.net/gh/renarpage/ragamsandi@main/SandiAngka-Regular.ttf') format('truetype');
             font-display: block;
         }
 
         @font-face {
             font-family: 'SandiBraille';
-            src: url('https://cdn.jsdelivr.net/gh/renarpage/fontsandi@main/SandiBraille-Regular.ttf') format('truetype');
+            src: url('https://cdn.jsdelivr.net/gh/renarpage/ragamsandi@main/SandiBraille-Regular.ttf') format('truetype');
             font-display: block;
         }
 
         @font-face {
             font-family: 'SandiGambari';
-            src: url('https://cdn.jsdelivr.net/gh/renarpage/fontsandi@main/SandiGambarI-Regular.ttf') format('truetype');
+            src: url('https://cdn.jsdelivr.net/gh/renarpage/ragamsandi@main/SandiGambarI-Regular.ttf') format('truetype');
             font-display: block;
         }
 
         @font-face {
             font-family: 'SandiGudepSedia';
-            src: url('https://cdn.jsdelivr.net/gh/renarpage/fontsandi@main/SandiGudepSedia-Regular.ttf') format('truetype');
+            src: url('https://cdn.jsdelivr.net/gh/renarpage/ragamsandi@main/SandiGudepSedia-Regular.ttf') format('truetype');
             font-display: block;
         }
 
         @font-face {
             font-family: 'SandiJam';
-            src: url('https://cdn.jsdelivr.net/gh/renarpage/fontsandi@main/SandiJam-Regular.ttf') format('truetype');
+            src: url('https://cdn.jsdelivr.net/gh/renarpage/ragamsandi@main/SandiJam-Regular.ttf') format('truetype');
             font-display: block;
         }
 
         @font-face {
             font-family: 'SandiJepangIi';
-            src: url('https://cdn.jsdelivr.net/gh/renarpage/fontsandi@main/SandiJepangIi-Regular.ttf') format('truetype');
+            src: url('https://cdn.jsdelivr.net/gh/renarpage/ragamsandi@main/SandiJepangIi-Regular.ttf') format('truetype');
             font-display: block;
         }
 
         @font-face {
             font-family: 'SandiKimia';
-            src: url('https://cdn.jsdelivr.net/gh/renarpage/fontsandi@main/SandiKimia-Regular.ttf') format('truetype');
+            src: url('https://cdn.jsdelivr.net/gh/renarpage/ragamsandi@main/SandiKimia-Regular.ttf') format('truetype');
             font-display: block;
         }
 
         @font-face {
             font-family: 'SandiKotakI';
-            src: url('https://cdn.jsdelivr.net/gh/renarpage/fontsandi@main/SandiKotakI-Regular.ttf') format('truetype');
+            src: url('https://cdn.jsdelivr.net/gh/renarpage/ragamsandi@main/SandiKotakI-Regular.ttf') format('truetype');
             font-display: block;
         }
 
         @font-face {
             font-family: 'SandiMagi';
-            src: url('https://cdn.jsdelivr.net/gh/renarpage/fontsandi@main/SandiMagi-Regular.ttf') format('truetype');
+            src: url('https://cdn.jsdelivr.net/gh/renarpage/ragamsandi@main/SandiMagi-Regular.ttf') format('truetype');
             font-display: block;
         }
 
         @font-face {
             font-family: 'SandiRumput';
-            src: url('https://cdn.jsdelivr.net/gh/renarpage/fontsandi@main/SandiRumput-Regular.ttf') format('truetype');
+            src: url('https://cdn.jsdelivr.net/gh/renarpage/ragamsandi@main/SandiRumput-Regular.ttf') format('truetype');
             font-display: block;
         }
 
@@ -85,13 +90,19 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            font-display: block;
             background: #3155e7;
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        .word.encoded {
+            font-weight: 600;
+            color: #000000 !important;
+            padding: 5px 10px;
+            border-radius: 5px;
         }
 
         .container {
@@ -118,14 +129,10 @@
 
         h1 {
             text-align: center;
-            color: #000000;
+            color: #3155e7;
             margin-bottom: 10px;
             font-size: 2.5em;
             font-weight: 700;
-            background: #3155e7;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .subtitle {
@@ -133,6 +140,25 @@
             color: #7f8c8d;
             margin-bottom: 30px;
             font-size: 0.95em;
+        }
+
+        .firebase-status {
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .firebase-status.connected {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .firebase-status.disconnected {
+            background: #fadbd8;
+            color: #e74c3c;
         }
 
         .mode-selection {
@@ -217,7 +243,7 @@
         label {
             display: block;
             margin-bottom: 8px;
-            color: #2c3e50;
+            color: #000;
             font-weight: 600;
             font-size: 0.95em;
         }
@@ -285,19 +311,11 @@
             font-size: 0.9em;
         }
 
-        /* TAMBAHKAN setelah style .word yang sudah ada */
         .word {
             text-rendering: optimizeLegibility;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             font-display: block !important;
-        }
-
-        /* Pastikan fonts tidak di-swap */
-        @supports (font-display: block) {
-            @font-face {
-                font-display: block;
-            }
         }
 
         .word-selector {
@@ -339,6 +357,7 @@
             cursor: pointer;
             transition: all 0.3s;
             font-family: 'Poppins', sans-serif;
+            width: 100%;
         }
 
         .btn-primary {
@@ -387,12 +406,9 @@
 
         .button-group {
             display: flex;
+            flex-direction: column;
             gap: 15px;
             margin-top: 20px;
-        }
-
-        .button-group .btn {
-            flex: 1;
         }
 
         .room-code-display {
@@ -429,7 +445,7 @@
             text-align: center;
             font-size: 2.5em;
             font-weight: 700;
-            color: #3155e7;
+            color: #e74c3c;
             margin-bottom: 20px;
         }
 
@@ -514,7 +530,7 @@
             margin-top: 15px;
             display: none;
             font-size: 1.1em;
-            color: #2c3e50;
+            color: #000;
             line-height: 1.6;
         }
 
@@ -542,7 +558,7 @@
         }
 
         .select-all-btn:hover {
-            background: #3155e7;
+            background: #2845c7;
         }
 
         .info-box {
@@ -556,7 +572,7 @@
         .info-box p {
             margin: 5px 0;
             font-size: 0.9em;
-            color: #2c3e50;
+            color: #000;
         }
 
         .status-badge {
@@ -605,32 +621,612 @@
                 content: '...';
             }
         }
+
+        .players-list {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .players-list h3 {
+            color: #000;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .player-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border: 2px solid #e0e0e0;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .player-item:hover {
+            border-color: #3155e7;
+            box-shadow: 0 4px 12px rgba(49, 85, 231, 0.1);
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            cursor: pointer;
+            background: white;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-name {
+            font-weight: 600;
+            color: #000;
+            font-size: 1em;
+        }
+
+        .player-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .online-indicator {
+            width: 10px;
+            height: 10px;
+            background: #27ae60;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse-dot 2s infinite;
+        }
+
+        .offline-indicator {
+            width: 10px;
+            height: 10px;
+            background: #95a5a6;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .player-details {
+            padding: 15px;
+            background: #f8f9fa;
+            border-top: 2px solid #e0e0e0;
+            display: none;
+        }
+
+        .player-details.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .answers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .answer-item {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 2px solid;
+        }
+
+        .answer-item.correct {
+            background: #d5f4e6;
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .answer-item.incorrect {
+            background: #fadbd8;
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+
+        .answer-item.empty {
+            background: #ecf0f1;
+            border-color: #bdc3c7;
+            color: #7f8c8d;
+        }
+
+        .answer-word {
+            font-weight: 600;
+        }
+
+        .answer-icon {
+            font-size: 1em;
+        }
+
+        .expand-icon {
+            transition: transform 0.3s;
+            font-size: 1.2em;
+            color: #7f8c8d;
+        }
+
+        .expand-icon.expanded {
+            transform: rotate(180deg);
+        }
+
+        .no-answers {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            padding: 10px;
+        }
+
+        /* ============================================ */
+        /* MOBILE RESPONSIVE */
+        /* ============================================ */
+
+        @media screen and (max-width: 480px) {
+            .answer-input {
+                padding: 10px;
+                font-size: 0.95em;
+            }
+
+            .stat-value {
+                font-size: 1.1em;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px;
+                border-radius: 15px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 8px;
+            }
+
+            .subtitle {
+                font-size: 0.85em;
+                margin-bottom: 20px;
+            }
+
+            .firebase-status {
+                padding: 8px;
+                margin-bottom: 15px;
+                font-size: 0.85em;
+            }
+
+            .mode-selection {
+                flex-direction: column;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+
+            .mode-btn {
+                padding: 15px;
+            }
+
+            .mode-icon {
+                font-size: 2.5em;
+                margin-bottom: 8px;
+            }
+
+            .mode-title {
+                font-size: 1.1em;
+            }
+
+            .mode-desc {
+                font-size: 0.8em;
+            }
+
+            .control-section {
+                padding: 18px;
+                margin-bottom: 15px;
+                border-radius: 12px;
+            }
+
+            .control-group {
+                margin-bottom: 15px;
+            }
+
+            label {
+                font-size: 0.9em;
+                margin-bottom: 6px;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            textarea {
+                padding: 10px;
+                font-size: 0.95em;
+            }
+
+            textarea {
+                min-height: 100px;
+            }
+
+            .font-selection {
+                max-height: 200px;
+                padding: 12px;
+                gap: 8px;
+            }
+
+            .font-checkbox {
+                padding: 6px;
+            }
+
+            .font-checkbox input[type="checkbox"] {
+                width: 16px;
+                height: 16px;
+                margin-right: 6px;
+            }
+
+            .font-checkbox label {
+                font-size: 0.85em;
+            }
+
+            .word-selector {
+                max-height: 150px;
+                padding: 12px;
+                gap: 8px;
+            }
+
+            .word-chip {
+                padding: 6px 12px;
+                font-size: 0.85em;
+            }
+
+            .select-all-btn {
+                padding: 6px 12px;
+                font-size: 0.85em;
+                margin-bottom: 8px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.95em;
+                border-radius: 8px;
+            }
+
+            .button-group {
+                gap: 12px;
+                margin-top: 15px;
+            }
+
+            .room-code-display {
+                padding: 15px;
+                margin-bottom: 15px;
+                border-radius: 12px;
+            }
+
+            .room-code-label {
+                font-size: 0.85em;
+                margin-bottom: 3px;
+            }
+
+            .room-code-value {
+                font-size: 1.5em;
+                letter-spacing: 2px;
+            }
+
+            .result-section {
+                padding: 20px;
+                min-height: 150px;
+                margin-bottom: 15px;
+                border-radius: 12px;
+            }
+
+            .timer-display {
+                font-size: 2em;
+                margin-bottom: 15px;
+            }
+
+            .keyword-display {
+                padding: 12px 18px;
+                font-size: 1.1em;
+                margin-bottom: 15px;
+                border-radius: 8px;
+            }
+
+            .paragraph-display {
+                font-size: 1.4em;
+                line-height: 1.6;
+                gap: 8px;
+                min-height: 80px;
+            }
+
+            .word.highlight {
+                padding: 4px 8px;
+                border-radius: 6px;
+            }
+
+            .answer-display {
+                padding: 15px;
+                margin-top: 12px;
+                font-size: 1em;
+                border-radius: 8px;
+            }
+
+            .info-box {
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+
+            .info-box p {
+                font-size: 0.85em;
+                margin: 3px 0;
+            }
+
+            .status-badge {
+                padding: 4px 10px;
+                font-size: 0.8em;
+                margin-left: 6px;
+            }
+
+            .loading {
+                padding: 15px;
+                font-size: 0.9em;
+            }
+
+            .empty-state {
+                font-size: 1em;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .paragraph-display {
+                font-size: 1.2em;
+                line-height: 1.5;
+                gap: 6px;
+            }
+
+            .timer-display {
+                font-size: 1.8em;
+            }
+
+            .room-code-value {
+                font-size: 1.3em;
+            }
+
+            .keyword-display {
+                font-size: 1em;
+            }
+        }
+
+        /* ============================================ */
+        /* ANSWER INPUT SECTION STYLING */
+        /* ============================================ */
+        .answer-input-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .answer-input-section h3 {
+            color: #000;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .word-inputs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .word-input-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .word-number {
+            font-size: 0.8em;
+            color: #7f8c8d;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .word-input {
+            padding: 12px 15px;
+            border: 3px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+            text-align: center;
+            width: 100%;
+            font-weight: 500;
+        }
+
+        .word-input:focus {
+            outline: none;
+            border-color: #3155e7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(49, 85, 231, 0.2);
+        }
+
+        .word-input.correct {
+            border-color: #27ae60;
+            background: #d5f4e6;
+            color: #27ae60;
+            font-weight: 600;
+            animation: correctPulse 0.5s ease;
+        }
+
+        .word-input.incorrect {
+            border-color: #e74c3c;
+            background: #fadbd8;
+            color: #e74c3c;
+            font-weight: 600;
+            animation: shake 0.5s ease;
+        }
+
+        .word-input:disabled {
+            background: #ecf0f1;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        @keyframes correctPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        /* Tablet - 2 columns */
+        @media screen and (max-width: 900px) {
+            .word-inputs-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .word-input {
+                padding: 10px 12px;
+                font-size: 0.95em;
+            }
+
+            .answer-input-section {
+                padding: 20px;
+            }
+
+            .answer-input-section h3 {
+                font-size: 1.1em;
+                margin-bottom: 15px;
+            }
+        }
+
+        /* Mobile - 1 column */
+        @media screen and (max-width: 600px) {
+            .word-inputs-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .word-input {
+                padding: 12px 15px;
+                font-size: 1em;
+            }
+
+            .word-number {
+                font-size: 0.75em;
+            }
+
+            .answer-input-section {
+                padding: 18px;
+                margin-top: 15px;
+            }
+
+            .answer-input-section h3 {
+                font-size: 1em;
+                margin-bottom: 12px;
+            }
+        }
+
+        /* Very small mobile */
+        @media screen and (max-width: 400px) {
+            .word-inputs-grid {
+                gap: 8px;
+            }
+
+            .word-input {
+                padding: 10px 12px;
+                font-size: 0.95em;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <h1>Ragam Sandi Pramuka</h1>
-        <p class="subtitle">Sistem Multiplayer - By Nar</p>
+        <p class="subtitle">Multiplayer Support - By Nar</p>
+
+        <!-- Firebase Status -->
+        <div class="firebase-status disconnected" id="firebaseStatus">
+            Connecting to database
+        </div>
 
         <!-- Mode Selection -->
         <div class="mode-selection" id="modeSelection">
             <div class="mode-btn" onclick="selectMode('operator')">
                 <div class="mode-icon">👨‍💼</div>
                 <div class="mode-title">Operator</div>
-                <div class="mode-desc">Buat & kelola room</div>
+                <div class="mode-desc">Buat room</div>
             </div>
             <div class="mode-btn" onclick="selectMode('user')">
                 <div class="mode-icon">👤</div>
                 <div class="mode-title">User</div>
-                <div class="mode-desc">Join room & kerjakan soal</div>
+                <div class="mode-desc">Join room</div>
             </div>
         </div>
 
         <!-- Operator Section -->
         <div class="section" id="operatorSection">
             <div class="control-section">
-                <h2 style="margin-bottom: 20px; color: #2c3e50;">📋 Operator Panel</h2>
+                <h2 style="margin-bottom: 20px; color: #000;">Create Room</h2>
 
                 <div class="control-group">
                     <label>Pilih Font Sandi:</label>
@@ -652,8 +1248,8 @@
                 </div>
 
                 <div class="control-group">
-                    <label>Waktu Mengerjakan (detik):</label>
-                    <input type="number" id="timerInput" min="30" max="600" value="120">
+                    <label>Waktu Mengerjakan (menit):</label>
+                    <input type="number" id="timerInput" min="1" max="60" value="2">
                 </div>
 
                 <div class="control-group">
@@ -664,7 +1260,7 @@
                             style="width: 20px; height: 20px; cursor: pointer; accent-color: #3155e7;">
                         <label for="showHighlightToggle"
                             style="margin: 0; cursor: pointer; font-weight: 400; font-size: 0.95em;">
-                            Tampilkan highlight pada kata kunci (jika dinonaktifkan, kata kunci tidak akan di-highlight)
+                            Tampilkan highlight pada kata kunci
                         </label>
                     </div>
                 </div>
@@ -683,8 +1279,20 @@
                 </div>
 
                 <div class="info-box">
-                    <p><strong>📌 Bagikan kode room ini kepada peserta!</strong></p>
+                    <p><strong>📌 Bagikan kode room ini kepada orang lain!</strong></p>
                     <p>Status: <span class="status-badge status-active">Room Aktif</span></p>
+                    <!-- Players List -->
+                    <div class="players-list">
+                        <h3>
+                            <div>
+                                <span>Player List</span>
+                            </div>
+                            <span class="status-badge status-active" id="playerCount">0 Player</span>
+                        </h3>
+                        <div id="playersListContainer">
+                            <div class="empty-state">Belum ada player yang bergabung</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="result-section">
@@ -709,25 +1317,31 @@
 
         <!-- User Section -->
         <div class="section" id="userSection">
-            <div class="control-section">
-                <h2 style="margin-bottom: 20px; color: #2c3e50;">👤 Panel User</h2>
+            <!-- Username Input Section -->
+            <div class="control-section" id="usernameSection">
+                <h2 style="margin-bottom: 20px; color: #000;">Player Credentials</h2>
 
                 <div class="control-group">
-                    <label>Masukkan Kode Room:</label>
+                    <label>Nama Lengkap:</label>
+                    <input type="text" id="usernameInput" placeholder="Masukkan nama Anda..." maxlength="30">
+                </div>
+
+                <div class="control-group">
+                    <label>Kode Room:</label>
                     <input type="text" id="roomCodeInput" placeholder="Contoh: ABC123" maxlength="6"
                         style="text-transform: uppercase;">
                 </div>
 
                 <div class="button-group">
-                    <button class="btn btn-primary" onclick="joinRoom()">Join Room</button>
-                    <button class="btn btn-secondary" onclick="leaveRoom()">Keluar</button>
+                    <button class="btn btn-primary" onclick="joinRoomWithUsername()">Join Room</button>
                 </div>
             </div>
 
             <!-- Room Joined Display -->
             <div id="roomJoinedDisplay" style="display: none;">
                 <div class="room-code-display">
-                    <div class="room-code-label">Connected to Room:</div>
+                    <div class="room-code-label">Player: <span id="currentUsername">-</span></div>
+                    <div class="room-code-label" style="font-size: 0.9em; margin-top: 5px;">Connected to Room:</div>
                     <div class="room-code-value" id="userRoomCodeDisplay">------</div>
                 </div>
 
@@ -738,85 +1352,325 @@
                     </div>
                 </div>
 
+                <div class="answer-input-section" id="answerInputSection" style="display: none;">
+                    <h3>Ketik Jawaban untuk Setiap Kata</h3>
+                    <div class="word-inputs-grid" id="wordInputsGrid"></div>
+                </div>
+
                 <div class="answer-display" id="userAnswerDisplay"></div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="leaveRoom()">Keluar dari Room</button>
+                </div>
+
+                <div class="button-group" id="userDownloadButton" style="display: none;">
+                    <button class="btn btn-primary" onclick="downloadUserSoalAsPDF()">Download Soal (PDF)</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        const fonts = [
-            'SandiAnalog', 'SandiAngka', 'SandiBraille', 'SandiGambari',
-            'SandiGudepSedia', 'SandiJam', 'SandiJepangIi', 'SandiKimia',
-            'SandiKotakI', 'SandiMagi', 'SandiRumput'
-        ];
-
-        // Storage Wrapper - works with both localStorage and window.storage
-        const Storage = {
-            async get(key, shared = false) {
-                try {
-                    if (typeof window.storage !== 'undefined') {
-                        return await window.storage.get(key, shared);
-                    } else {
-                        const value = localStorage.getItem(key);
-                        return value ? { key, value, shared } : null;
-                    }
-                } catch (error) {
-                    console.error('Storage get error:', error);
-                    return null;
-                }
-            },
-
-            async set(key, value, shared = false) {
-                try {
-                    if (typeof window.storage !== 'undefined') {
-                        return await window.storage.set(key, value, shared);
-                    } else {
-                        localStorage.setItem(key, value);
-                        return { key, value, shared };
-                    }
-                } catch (error) {
-                    console.error('Storage set error:', error);
-                    return null;
-                }
-            },
-
-            async delete(key, shared = false) {
-                try {
-                    if (typeof window.storage !== 'undefined') {
-                        return await window.storage.delete(key, shared);
-                    } else {
-                        localStorage.removeItem(key);
-                        return { key, deleted: true, shared };
-                    }
-                } catch (error) {
-                    console.error('Storage delete error:', error);
-                    return null;
-                }
-            }
+        // ============================================
+        // FIREBASE CONFIGURATION
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAMj8qsSKUPxKNKuoFTJnhtoCeR_FGjEqE",
+            authDomain: "ragamsandipramuka.firebaseapp.com",
+            databaseURL: "https://ragamsandipramuka-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "ragamsandipramuka",
+            storageBucket: "ragamsandipramuka.firebasestorage.app",
+            messagingSenderId: "449743908107",
+            appId: "1:449743908107:web:af7f454784dba3a186060e",
+            measurementId: "G-XCDX61TRZW"
         };
+
+        // Initialize Firebase
+        let database;
+        let isFirebaseConnected = false;
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+
+            // Test connection
+            const connectedRef = database.ref('.info/connected');
+            connectedRef.on('value', (snap) => {
+                if (snap.val() === true) {
+                    isFirebaseConnected = true;
+                    document.getElementById('firebaseStatus').className = 'firebase-status connected';
+                    document.getElementById('firebaseStatus').textContent = 'Database connected';
+                } else {
+                    isFirebaseConnected = false;
+                    document.getElementById('firebaseStatus').className = 'firebase-status disconnected';
+                    document.getElementById('firebaseStatus').textContent = 'Database connection failed';
+                }
+            });
+        } catch (error) {
+            console.error('Firebase initialization error:', error);
+            alert('❌ Gagal menghubungkan ke Firebase! Pastikan konfigurasi sudah benar.');
+        }
+
+        // ============================================
+        // FONTS & GLOBAL VARIABLES
+        // ============================================
+        const fonts = [
+            { name: 'SandiAnalog', display: 'Sandi Analog' },
+            { name: 'SandiAngka', display: 'Sandi Angka' },
+            { name: 'SandiBraille', display: 'Sandi Braille' },
+            { name: 'SandiGambari', display: 'Sandi Gambar I' },
+            { name: 'SandiGudepSedia-GS', display: 'Sandi Gudep Sedia (GS)', actualFont: 'SandiGudepSedia', transform: 'uppercase' },
+            { name: 'SandiGudepSedia-SG', display: 'Sandi Gudep Sedia (SG)', actualFont: 'SandiGudepSedia', transform: 'lowercase' },
+            { name: 'SandiJam', display: 'Sandi Jam' },
+            { name: 'SandiJepangIi', display: 'Sandi Jepang II' },
+            { name: 'SandiKimia', display: 'Sandi Kimia' },
+            { name: 'SandiKotakI', display: 'Sandi Kotak I' },
+            { name: 'SandiMagi', display: 'Sandi Magi' },
+            { name: 'SandiRumput', display: 'Sandi Rumput' },
+            { name: 'Sandi1203', display: 'Sandi 1203 Mundur', encoder: encode1203, useNormalFont: true, transform: 'uppercase' }
+        ];
 
         let currentMode = null;
         let selectedFonts = [];
         let selectedKeyword = null;
         let currentRoomCode = null;
         let timerInterval = null;
-        let userPollingInterval = null;
+        let roomListener = null;
+        let userTimerInterval = null;
+        let timeoutAudio = null;
+        let audioContext = null;
+        let audioUnlocked = false;
+        let currentUsername = null;
+        let currentUserId = null;
+        let playersListener = null;
 
-        // GANTI fungsi preloadFonts() yang lama dengan ini
-        async function preloadFonts() {
-            const fontPromises = fonts.map(async (fontName) => {
+        // ============================================
+        // SANDI 1203 MUNDUR ENCODER/DECODER
+        // ============================================
+        function encode1203(text) {
+            const kunci = [1, 2, 0, 3];
+            let hasil = '';
+            let idxKunci = 0;
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+
+                if (/[a-zA-Z]/.test(char)) {
+                    const basis = char === char.toUpperCase() ? 65 : 97;
+                    const posisi = char.charCodeAt(0) - basis;
+                    const geser = kunci[idxKunci];
+                    const posisiBaru = (posisi - geser + 26) % 26;
+                    hasil += String.fromCharCode(basis + posisiBaru);
+                    idxKunci = (idxKunci + 1) % 4;
+                } else {
+                    hasil += char;
+                }
+            }
+
+            return hasil;
+        }
+
+        function decode1203(sandi) {
+            const kunci = [1, 2, 0, 3];
+            let hasil = '';
+            let idxKunci = 0;
+
+            for (let i = 0; i < sandi.length; i++) {
+                const char = sandi[i];
+
+                if (/[a-zA-Z]/.test(char)) {
+                    const basis = char === char.toUpperCase() ? 65 : 97;
+                    const posisi = char.charCodeAt(0) - basis;
+                    const geser = kunci[idxKunci];
+                    const posisiBaru = (posisi + geser) % 26;
+                    hasil += String.fromCharCode(basis + posisiBaru);
+                    idxKunci = (idxKunci + 1) % 4;
+                } else {
+                    hasil += char;
+                }
+            }
+
+            return hasil;
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        function initTimeoutSound() {
+            if (!timeoutAudio) {
+                timeoutAudio = new Audio('https://cdn.jsdelivr.net/gh/renarpage/ragamsandi@main/timeout.mp3');
+                timeoutAudio.preload = 'auto';
+                timeoutAudio.volume = 0.7; // Set volume
+
+                timeoutAudio.addEventListener('canplaythrough', () => {
+                    console.log('Audio ready to play');
+                    audioUnlocked = true;
+                }, { once: true });
+
+                timeoutAudio.addEventListener('error', (e) => {
+                    console.error('Audio load error:', e);
+                    console.error('Failed to load:', timeoutAudio.src);
+                });
+
+                // Force load
+                timeoutAudio.load();
+            }
+        }
+
+        function unlockAudio() {
+            if (audioUnlocked) return;
+
+            console.log('Unlocking audio...');
+
+            // Initialize audio if not already
+            if (!timeoutAudio) {
+                initTimeoutSound();
+            }
+
+            // Try to play and immediately pause
+            if (timeoutAudio) {
+                const playPromise = timeoutAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        timeoutAudio.pause();
+                        timeoutAudio.currentTime = 0;
+                        audioUnlocked = true;
+                        console.log('✅ Audio unlocked successfully');
+                    }).catch(err => {
+                        console.log('⚠️ Audio unlock failed:', err);
+                    });
+                }
+            }
+
+            // AudioContext unlock
+            if (!audioContext) {
                 try {
-                    // Load font dengan berbagai ukuran untuk memastikan ter-cache
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume().then(() => {
+                            console.log('✅ AudioContext resumed');
+                        });
+                    }
+                } catch (e) {
+                    console.error('AudioContext error:', e);
+                }
+            }
+        }
+
+        function playTimeoutSound() {
+            console.log('Attempting to play timeout sound...');
+
+            if (!timeoutAudio) {
+                console.log('Audio not initialized, initializing now...');
+                initTimeoutSound();
+            }
+
+            // Reset audio to beginning
+            timeoutAudio.currentTime = 0;
+
+            // Try to play
+            const playPromise = timeoutAudio.play();
+
+            if (playPromise !== undefined) {
+                playPromise
+                    .then(() => {
+                        console.log('✅ Timeout sound played successfully');
+                    })
+                    .catch(err => {
+                        console.error('❌ Error playing timeout sound:', err);
+                        console.log('Falling back to beep sound...');
+                        playBeepSound(5000);
+                    });
+            } else {
+                console.log('Play promise undefined, trying beep fallback');
+                playBeepSound(5000);
+            }
+        }
+
+        async function joinRoomWithUsername() {
+            unlockAudio();
+
+            const username = document.getElementById('usernameInput').value.trim();
+            const roomCode = document.getElementById('roomCodeInput').value.trim().toUpperCase();
+
+            if (!username) {
+                alert('⚠️ Masukkan nama Anda terlebih dahulu!');
+                return;
+            }
+
+            if (username.length < 3) {
+                alert('⚠️ Nama minimal 3 karakter!');
+                return;
+            }
+
+
+            if (!isFirebaseConnected) {
+                alert('⚠️ Tidak terhubung ke Firebase! Periksa koneksi internet Anda.');
+                return;
+            }
+
+            if (!roomCode || roomCode.length !== 6) {
+                alert('⚠️ Masukkan kode room yang valid (6 karakter)!');
+                return;
+            }
+
+            try {
+                const roomRef = database.ref(`rooms/${roomCode}`);
+                const snapshot = await roomRef.once('value');
+                const roomData = snapshot.val();
+
+                if (!roomData) {
+                    alert('❌ Room tidak ditemukan! Periksa kembali kode room.');
+                    return;
+                }
+
+                if (!roomData.active) {
+                    alert('❌ Room sudah ditutup!');
+                    return;
+                }
+
+                // Generate unique user ID
+                currentUserId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                currentUsername = username;
+                currentRoomCode = roomCode;
+
+                // Daftarkan player ke database
+                await database.ref(`rooms/${roomCode}/players/${currentUserId}`).set({
+                    username: username,
+                    joinedAt: firebase.database.ServerValue.TIMESTAMP,
+                    correctAnswers: 0,
+                    totalWords: roomData.wordsWithFonts ? roomData.wordsWithFonts.length : 0,
+                    answers: [],
+                    online: true
+                });
+
+                // Set presence (untuk tracking online/offline)
+                const playerRef = database.ref(`rooms/${roomCode}/players/${currentUserId}`);
+                playerRef.onDisconnect().update({ online: false });
+
+                document.getElementById('usernameSection').style.display = 'none';
+                await displayUserRoom(roomCode, roomData);
+                startUserListener();
+
+                document.getElementById('currentUsername').textContent = username;
+
+                alert('✅ Berhasil join room!');
+            } catch (error) {
+                console.error('Error joining room:', error);
+                alert('❌ Gagal join room. Silakan coba lagi.');
+            }
+        }
+
+        async function preloadFonts() {
+            const uniqueFonts = ['SandiAnalog', 'SandiAngka', 'SandiBraille', 'SandiGambari',
+                'SandiGudepSedia', 'SandiJam', 'SandiJepangIi', 'SandiKimia',
+                'SandiKotakI', 'SandiMagi', 'SandiRumput'];
+
+            const fontPromises = uniqueFonts.map(async (fontName) => {
+                try {
                     await document.fonts.load(`16px ${fontName}`);
                     await document.fonts.load(`24px ${fontName}`);
                     await document.fonts.load(`32px ${fontName}`);
-
-                    // Verifikasi font berhasil di-load
-                    const fontCheck = document.fonts.check(`16px ${fontName}`);
-                    if (!fontCheck) {
-                        console.warn(`Font ${fontName} might not be loaded properly`);
-                    }
-
                     return fontName;
                 } catch (error) {
                     console.error(`Failed to load font ${fontName}:`, error);
@@ -826,54 +1680,431 @@
 
             const results = await Promise.allSettled(fontPromises);
             const loadedFonts = results.filter(r => r.status === 'fulfilled' && r.value).map(r => r.value);
-            console.log(`Successfully loaded ${loadedFonts.length}/${fonts.length} fonts:`, loadedFonts);
-
-            // Tunggu tambahan untuk memastikan fonts benar-benar siap
+            console.log(`Successfully loaded ${loadedFonts.length}/${uniqueFonts.length} fonts`);
             await new Promise(resolve => setTimeout(resolve, 500));
         }
 
-        // Ganti function init() yang ada
-        async function init() {
-            await preloadFonts(); // Preload fonts terlebih dahulu
-            initFontSelection();
-            document.getElementById('paragraphInput').addEventListener('input', updateWordSelector);
+        // ============================================
+        // ANSWER INPUT FUNCTIONS
+        // ============================================
+        let wordAnswers = [];
+
+        function initAnswerInput() {
+            // Initialization akan dilakukan saat room data tersedia
         }
 
-        // Tambahkan fungsi ini di bagian atas JavaScript, setelah variabel global
-        function playBeepSound(duration = 5000) {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const startTime = audioContext.currentTime;
-            const endTime = startTime + (duration / 1000);
+        function checkWordAnswer(input, index) {
+            const userAnswer = input.value.trim().toLowerCase();
+            const correctAnswer = input.dataset.correct;
 
-            // Buat beep sound dengan interval
-            const beepInterval = 500; // beep setiap 500ms
-            let currentTime = startTime;
+            if (userAnswer === '') {
+                input.className = 'word-input';
+                wordAnswers[index].userAnswer = '';
+                wordAnswers[index].isCorrect = false;
+                updatePlayerScore(); // Update real-time
+                return;
+            }
 
-            while (currentTime < endTime) {
+            wordAnswers[index].userAnswer = userAnswer;
+
+            if (userAnswer === correctAnswer) {
+                input.className = 'word-input correct';
+                wordAnswers[index].isCorrect = true;
+
+                if (!input.dataset.playedSound) {
+                    playSuccessSound();
+                    input.dataset.playedSound = 'true';
+                }
+
+                updatePlayerScore(); // Update real-time
+                checkAllAnswers();
+            } else {
+                input.className = 'word-input incorrect';
+                wordAnswers[index].isCorrect = false;
+                input.dataset.playedSound = '';
+                updatePlayerScore(); // Update real-time
+            }
+        }
+
+        async function updatePlayerScore() {
+            if (!currentRoomCode || !currentUserId) {
+                console.log('No room or user ID');
+                return;
+            }
+
+            const correctCount = wordAnswers.filter(a => a.isCorrect).length;
+            const totalWords = wordAnswers.length;
+
+            // Prepare detailed answers
+            const detailedAnswers = wordAnswers.map(answer => ({
+                word: answer.correct,
+                userAnswer: answer.userAnswer || '',
+                isCorrect: answer.isCorrect
+            }));
+
+            try {
+                const updateData = {
+                    correctAnswers: correctCount,
+                    totalWords: totalWords,
+                    answers: detailedAnswers,
+                    lastUpdate: firebase.database.ServerValue.TIMESTAMP
+                };
+
+                await database.ref(`rooms/${currentRoomCode}/players/${currentUserId}`).update(updateData);
+
+                console.log('Score updated:', correctCount, '/', totalWords);
+            } catch (error) {
+                console.error('Error updating score:', error);
+            }
+        }
+
+        function startPlayersListener() {
+            if (!currentRoomCode) return;
+
+            if (playersListener) {
+                database.ref(`rooms/${currentRoomCode}/players`).off('value', playersListener);
+            }
+
+            console.log('Starting players listener for room:', currentRoomCode);
+
+            playersListener = database.ref(`rooms/${currentRoomCode}/players`).on('value', (snapshot) => {
+                const players = snapshot.val();
+                console.log('Players data updated:', players);
+                updatePlayersList(players);
+            });
+        }
+
+        function updatePlayersList(players) {
+            const container = document.getElementById('playersListContainer');
+            const countBadge = document.getElementById('playerCount');
+
+            if (!players) {
+                container.innerHTML = '<div class="empty-state">Belum ada peserta yang bergabung</div>';
+                countBadge.textContent = '0 Player';
+                return;
+            }
+
+            const playerArray = Object.entries(players).map(([id, data]) => ({
+                id,
+                ...data
+            }));
+
+            // Sort by score (highest first)
+            playerArray.sort((a, b) => (b.correctAnswers || 0) - (a.correctAnswers || 0));
+
+            countBadge.textContent = `${playerArray.length} Player${playerArray.length > 1 ? 's' : ''}`;
+
+            container.innerHTML = playerArray.map(player => {
+                const percentage = player.totalWords > 0
+                    ? Math.round((player.correctAnswers / player.totalWords) * 100)
+                    : 0;
+
+                let scoreClass = 'incomplete';
+                if (percentage === 100) scoreClass = '';
+                else if (percentage >= 50) scoreClass = 'partial';
+
+                const onlineStatus = player.online
+                    ? '<span class="online-indicator"></span>'
+                    : '<span class="offline-indicator"></span>';
+
+                // Generate answers detail
+                let answersHTML = '';
+                if (player.answers && player.answers.length > 0) {
+                    answersHTML = player.answers.map((ans, idx) => {
+                        let answerClass = 'empty';
+                        let icon = '⚪';
+                        let displayText = `#${idx + 1}`;
+
+                        if (ans.userAnswer) {
+                            if (ans.isCorrect) {
+                                answerClass = 'correct';
+                                icon = '✓';
+                                displayText = ans.word;
+                            } else {
+                                answerClass = 'incorrect';
+                                icon = '✗';
+                                displayText = ans.userAnswer;
+                            }
+                        } else {
+                            displayText = ans.word;
+                        }
+
+                        return `
+                    <div class="answer-item ${answerClass}" title="${ans.isCorrect ? 'Benar' : (ans.userAnswer ? 'Salah: ' + ans.userAnswer : 'Belum dijawab')}">
+                        <span class="answer-word">${displayText}</span>
+                        <span class="answer-icon">${icon}</span>
+                    </div>
+                `;
+                    }).join('');
+                } else {
+                    answersHTML = '<div class="no-answers">Belum ada jawaban</div>';
+                }
+
+                return `
+            <div class="player-item">
+                <div class="player-header" onclick="togglePlayerDetails('${player.id}')">
+                    <div class="player-info">
+                        ${onlineStatus}
+                        <span class="player-name">${player.username}</span>
+                    </div>
+                    <div class="player-stats">
+                        <span style="color: #7f8c8d; font-size: 0.9em;">${player.correctAnswers || 0}/${player.totalWords || 0}</span>
+                        <span class="expand-icon" id="expand-${player.id}">▼</span>
+                    </div>
+                </div>
+                <div class="player-details" id="details-${player.id}">
+                    <div style="margin-bottom: 8px; font-weight: 600; color: #000;">Detail Jawaban:</div>
+                    <div class="answers-grid">
+                        ${answersHTML}
+                    </div>
+                </div>
+            </div>
+        `;
+            }).join('');
+        }
+
+        function togglePlayerDetails(playerId) {
+            const details = document.getElementById(`details-${playerId}`);
+            const expandIcon = document.getElementById(`expand-${playerId}`);
+
+            if (details.classList.contains('show')) {
+                details.classList.remove('show');
+                expandIcon.classList.remove('expanded');
+            } else {
+                // Close all other details first
+                document.querySelectorAll('.player-details').forEach(d => d.classList.remove('show'));
+                document.querySelectorAll('.expand-icon').forEach(i => i.classList.remove('expanded'));
+
+                // Open this one
+                details.classList.add('show');
+                expandIcon.classList.add('expanded');
+            }
+        }
+
+        function createWordInputs(roomData) {
+            const grid = document.getElementById('wordInputsGrid');
+            grid.innerHTML = '';
+            wordAnswers = [];
+
+            roomData.wordsWithFonts.forEach((item, index) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'word-input-wrapper';
+
+                const wordNumber = document.createElement('div');
+                wordNumber.className = 'word-number';
+                wordNumber.textContent = `#${index + 1}`;
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'word-input';
+                input.id = `word-input-${index}`;
+                input.placeholder = '...';
+                input.autocomplete = 'off';
+                input.dataset.index = index;
+                input.dataset.correct = item.originalWord.toLowerCase();
+
+                input.addEventListener('input', (e) => checkWordAnswer(e.target, index));
+
+                wrapper.appendChild(wordNumber);
+                wrapper.appendChild(input);
+                grid.appendChild(wrapper);
+
+                // Initialize wordAnswers array
+                wordAnswers.push({
+                    index: index,
+                    correct: item.originalWord.toLowerCase(),
+                    userAnswer: '',
+                    isCorrect: false
+                });
+            });
+
+            // Send initial empty state to Firebase
+            updatePlayerScore();
+        }
+
+        let updateScoreTimeout = null;
+
+        function checkWordAnswer(input, index) {
+            const userAnswer = input.value.trim().toLowerCase();
+            const correctAnswer = input.dataset.correct;
+
+            // Clear previous timeout
+            if (updateScoreTimeout) {
+                clearTimeout(updateScoreTimeout);
+            }
+
+            if (userAnswer === '') {
+                input.className = 'word-input';
+                wordAnswers[index].userAnswer = '';
+                wordAnswers[index].isCorrect = false;
+            } else if (userAnswer === correctAnswer) {
+                input.className = 'word-input correct';
+                wordAnswers[index].isCorrect = true;
+                wordAnswers[index].userAnswer = userAnswer;
+
+                if (!input.dataset.playedSound) {
+                    playSuccessSound();
+                    input.dataset.playedSound = 'true';
+                }
+
+                checkAllAnswers();
+            } else {
+                input.className = 'word-input incorrect';
+                wordAnswers[index].isCorrect = false;
+                wordAnswers[index].userAnswer = userAnswer;
+                input.dataset.playedSound = '';
+            }
+
+            // Debounce update to Firebase (wait 300ms after user stops typing)
+            updateScoreTimeout = setTimeout(() => {
+                updatePlayerScore();
+            }, 300);
+        }
+
+        function checkAllAnswers() {
+            const allCorrect = wordAnswers.every(answer => answer.isCorrect);
+
+            if (allCorrect && wordAnswers.length > 0) {
+                // All answers correct!
+                setTimeout(() => {
+                    playCompletionSound();
+                    alert('🎉 Selamat! Semua jawaban benar!');
+                }, 300);
+            }
+        }
+
+        function playSuccessSound() {
+            try {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
 
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
 
-                oscillator.frequency.value = 800; // Frekuensi suara (Hz)
+                oscillator.frequency.value = 600;
                 oscillator.type = 'sine';
 
-                gainNode.gain.setValueAtTime(0.3, currentTime); // Volume
-                gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
 
-                oscillator.start(currentTime);
-                oscillator.stop(currentTime + 0.2);
-
-                currentTime += beepInterval / 1000;
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.2);
+            } catch (error) {
+                console.error('Error playing success sound:', error);
             }
         }
 
+        function playCompletionSound() {
+            try {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+
+                // Play ascending notes
+                const notes = [523.25, 659.25, 783.99]; // C, E, G
+                notes.forEach((freq, i) => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'sine';
+
+                    const startTime = audioContext.currentTime + (i * 0.15);
+                    gainNode.gain.setValueAtTime(0.3, startTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.3);
+
+                    oscillator.start(startTime);
+                    oscillator.stop(startTime + 0.3);
+                });
+            } catch (error) {
+                console.error('Error playing completion sound:', error);
+            }
+        }
+
+        function resetAnswerInput() {
+            document.getElementById('usernameSection').style.display = 'block';
+            document.getElementById('usernameInput').value = '';
+            const grid = document.getElementById('wordInputsGrid');
+            const inputs = grid.querySelectorAll('.word-input');
+            inputs.forEach(input => {
+                input.disabled = false;
+            });
+            grid.innerHTML = '';
+            wordAnswers = [];
+        }
+
+        async function init() {
+            await preloadFonts();
+            initFontSelection();
+            initTimeoutSound();
+            initAnswerInput(); // Tambahkan ini
+            document.getElementById('paragraphInput').addEventListener('input', updateWordSelector);
+        }
+
+        // Tambahkan fungsi beep sebagai fallback
+        function playBeepSound(duration = 5000) {
+            try {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+
+                const startTime = audioContext.currentTime;
+                const endTime = startTime + (duration / 1000);
+                const beepInterval = 500;
+                let currentTime = startTime;
+
+                while (currentTime < endTime) {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+                    gainNode.gain.setValueAtTime(0.3, currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.2);
+                    oscillator.start(currentTime);
+                    oscillator.stop(currentTime + 0.2);
+                    currentTime += beepInterval / 1000;
+                }
+            } catch (error) {
+                console.error('Error playing beep:', error);
+            }
+        }
+
+        // Ganti fungsi playTimeoutSound dengan:
+        // Ganti fungsi playTimeoutSound dengan:
+        function playTimeoutSound() {
+            console.log('Playing timeout sound...'); // Debug log
+            initTimeoutSound();
+            timeoutAudio.currentTime = 0;
+            timeoutAudio.play()
+                .then(() => console.log('Sound played successfully'))
+                .catch(err => {
+                    console.error('Error playing sound:', err);
+                    // Fallback ke beep sound jika gagal
+                    playBeepSound(5000);
+                });
+        }
+
+
+        // ============================================
+        // UI FUNCTIONS
+        // ============================================
         function selectMode(mode) {
             currentMode = mode;
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
             event.target.closest('.mode-btn').classList.add('active');
-
             document.getElementById('modeSelection').style.display = 'none';
             document.getElementById('operatorSection').classList.remove('active');
             document.getElementById('userSection').classList.remove('active');
@@ -891,8 +2122,8 @@
                 const div = document.createElement('div');
                 div.className = 'font-checkbox';
                 div.innerHTML = `
-                    <input type="checkbox" id="font-${font}" value="${font}" onchange="updateSelectedFonts()">
-                    <label for="font-${font}">${font}</label>
+                    <input type="checkbox" id="font-${font.name}" value="${font.name}" onchange="updateSelectedFonts()">
+                    <label for="font-${font.name}">${font.display}</label>
                 `;
                 container.appendChild(div);
             });
@@ -947,36 +2178,79 @@
         }
 
         function getRandomFont() {
-            if (selectedFonts.length === 0) return 'Arial';
-            return selectedFonts[Math.floor(Math.random() * selectedFonts.length)];
+            if (selectedFonts.length === 0) return { name: 'Arial', actualFont: 'Arial', transform: 'none' };
+            const fontName = selectedFonts[Math.floor(Math.random() * selectedFonts.length)];
+            const fontObj = fonts.find(f => f.name === fontName);
+            return fontObj || { name: fontName, actualFont: fontName, transform: 'none' };
         }
 
+        // ============================================
+        // OPERATOR FUNCTIONS
+        // ============================================
         async function createRoom() {
+            unlockAudio();
+            if (!isFirebaseConnected) {
+                startPlayersListener();
+                alert('⚠️ Tidak terhubung ke Firebase! Periksa koneksi internet Anda.');
+                return;
+            }
+
             if (selectedFonts.length === 0) {
+                startPlayersListener();
                 alert('⚠️ Pilih minimal satu font terlebih dahulu!');
                 return;
             }
 
             const paragraph = document.getElementById('paragraphInput').value.trim();
             if (!paragraph) {
+                startPlayersListener();
                 alert('⚠️ Masukkan paragraf terlebih dahulu!');
                 return;
             }
 
             if (!selectedKeyword) {
+                startPlayersListener();
                 alert('⚠️ Pilih kata kunci terlebih dahulu!');
                 return;
             }
 
             const roomCode = generateRoomCode();
             const words = paragraph.split(/\s+/).filter(w => w.length > 0);
-            const timer = parseInt(document.getElementById('timerInput').value);
+            const timerMinutes = parseInt(document.getElementById('timerInput').value);
+            const timer = timerMinutes * 60;
 
-            // Generate random fonts for each word
-            const wordsWithFonts = words.map(word => ({
-                word: word,
-                font: getRandomFont()
-            }));
+            const shuffledFonts = [...selectedFonts].sort(() => Math.random() - 0.5);
+            let fontIndex = 0;
+
+            const wordsWithFonts = words.map(word => {
+                // Pilih font secara berurutan dari shuffled fonts, lalu ulangi jika habis
+                const fontName = shuffledFonts[fontIndex % shuffledFonts.length];
+                fontIndex++;
+
+                const fontObj = fonts.find(f => f.name === fontName);
+                let displayWord = word;
+
+                // Handle transform (uppercase/lowercase) - DILAKUKAN DULU SEBELUM ENCODING
+                if (fontObj.transform === 'uppercase') {
+                    displayWord = word.toUpperCase();
+                } else if (fontObj.transform === 'lowercase') {
+                    displayWord = word.toLowerCase();
+                }
+
+                // Handle encoder (untuk Sandi 1203 atau sandi text-based lainnya)
+                // Encoder akan menerima hasil transform (sudah uppercase/lowercase)
+                if (fontObj.encoder && typeof fontObj.encoder === 'function') {
+                    displayWord = fontObj.encoder(displayWord);
+                }
+
+                return {
+                    word: displayWord,
+                    originalWord: word,
+                    font: fontObj.useNormalFont ? 'Poppins' : (fontObj.actualFont || fontObj.name),
+                    fontName: fontObj.name,
+                    isEncoded: !!fontObj.encoder
+                };
+            });
 
             const showHighlight = document.getElementById('showHighlightToggle').checked;
 
@@ -986,18 +2260,20 @@
                 wordsWithFonts: wordsWithFonts,
                 keyword: selectedKeyword,
                 timer: timer,
-                showHighlight: showHighlight, // TAMBAHAN BARIS INI
+                showHighlight: showHighlight,
                 timerStarted: false,
                 timerEnded: false,
                 showAnswer: false,
                 active: true,
-                createdAt: Date.now()
+                createdAt: firebase.database.ServerValue.TIMESTAMP
             };
 
             try {
-                await Storage.set(`room:${roomCode}`, JSON.stringify(roomData), true);
+                await database.ref(`rooms/${roomCode}`).set(roomData);
                 currentRoomCode = roomCode;
-                await displayOperatorRoom(roomCode, roomData); // Tambahkan await
+                await displayOperatorRoom(roomCode, roomData);
+                startPlayersListener();
+                alert('✅ Room berhasil dibuat!');
             } catch (error) {
                 console.error('Error creating room:', error);
                 alert('❌ Gagal membuat room. Silakan coba lagi.');
@@ -1013,7 +2289,6 @@
             const display = document.getElementById('operatorParagraphDisplay');
             display.innerHTML = '';
 
-            // Tunggu fonts ter-load dulu
             await document.fonts.ready;
             await new Promise(resolve => setTimeout(resolve, 300));
 
@@ -1024,7 +2299,17 @@
                     span.classList.add('highlight');
                 }
                 span.textContent = item.word;
-                span.style.fontFamily = `"${item.font}", sans-serif`; // Tambahkan quotes
+
+                if (item.isEncoded) {
+                    span.style.fontFamily = `"${item.font}", sans-serif`;
+                    span.style.fontWeight = '600';
+                    span.style.letterSpacing = '2px';
+                    span.style.color = '#000';
+                    span.classList.add('encoded');
+                } else {
+                    span.style.fontFamily = `"${item.font}", sans-serif`;
+                }
+
                 span.style.fontSize = '1em';
                 span.style.fontDisplay = 'block';
                 display.appendChild(span);
@@ -1041,21 +2326,37 @@
         }
 
         async function startTimer() {
-            if (!currentRoomCode) return;
+            unlockAudio();
+            if (!currentRoomCode || !isFirebaseConnected) return;
 
             try {
-                const result = await Storage.get(`room:${currentRoomCode}`, true);
-                if (!result) return;
+                const roomRef = database.ref(`rooms/${currentRoomCode}`);
+                const snapshot = await roomRef.once('value');
+                const roomData = snapshot.val();
 
-                const roomData = JSON.parse(result.value);
-                roomData.timerStarted = true;
-                roomData.timerStartTime = Date.now();
+                if (!roomData) return;
 
-                await Storage.set(`room:${currentRoomCode}`, JSON.stringify(roomData), true);
+                // Gunakan server timestamp Firebase
+                await roomRef.update({
+                    timerStarted: true,
+                    timerStartTime: firebase.database.ServerValue.TIMESTAMP,
+                    timerDuration: roomData.timer
+                });
 
-                let timeLeft = roomData.timer;
+                // Tunggu sampai server timestamp tersimpan
+                const updatedSnapshot = await roomRef.once('value');
+                const startTime = updatedSnapshot.val().timerStartTime;
+
+                // Mulai interval dengan sinkronisasi server time
                 timerInterval = setInterval(async () => {
-                    timeLeft--;
+                    const serverTimeRef = database.ref('.info/serverTimeOffset');
+                    const offsetSnap = await serverTimeRef.once('value');
+                    const offset = offsetSnap.val() || 0;
+                    const now = Date.now() + offset;
+
+                    const elapsed = Math.floor((now - startTime) / 1000);
+                    const timeLeft = Math.max(0, roomData.timer - elapsed);
+
                     updateOperatorTimer(timeLeft);
 
                     const display = document.getElementById('operatorTimerDisplay');
@@ -1063,23 +2364,21 @@
                         display.classList.add('warning');
                     }
 
-                    // Cari bagian ini dalam function startTimer()
                     if (timeLeft <= 0) {
                         clearInterval(timerInterval);
                         display.textContent = 'Waktu Habis!';
                         display.classList.remove('warning');
 
-                        // TAMBAHKAN BARIS INI
-                        playBeepSound(5000); // Beep selama 5 detik
+                        // PENTING: Pastikan audio di-play
+                        console.log('⏰ Timer ended, playing timeout sound...');
+                        setTimeout(() => {
+                            playTimeoutSound();
+                        }, 100); // Delay sedikit untuk memastikan UI sudah update
 
-                        const result = await Storage.get(`room:${currentRoomCode}`, true);
-                        if (result) {
-                            const roomData = JSON.parse(result.value);
-                            roomData.timerEnded = true;
-                            await Storage.set(`room:${currentRoomCode}`, JSON.stringify(roomData), true);
-                        }
+                        await roomRef.update({ timerEnded: true });
                     }
                 }, 1000);
+
             } catch (error) {
                 console.error('Error starting timer:', error);
                 alert('❌ Gagal memulai timer.');
@@ -1087,26 +2386,26 @@
         }
 
         async function showAnswerToAll() {
-            if (!currentRoomCode) return;
+            if (!currentRoomCode || !isFirebaseConnected) return;
 
             try {
-                const result = await Storage.get(`room:${currentRoomCode}`, true);
-                if (!result) return;
+                const roomRef = database.ref(`rooms/${currentRoomCode}`);
+                await roomRef.update({
+                    showAnswer: true
+                });
 
-                const roomData = JSON.parse(result.value);
-                roomData.showAnswer = true;
-
-                await Storage.set(`room:${currentRoomCode}`, JSON.stringify(roomData), true);
+                const snapshot = await roomRef.once('value');
+                const roomData = snapshot.val();
 
                 const answerDiv = document.getElementById('operatorAnswerDisplay');
                 answerDiv.innerHTML = `
-                    <strong>📝 Jawaban Lengkap:</strong><br>
+                    <strong>Jawaban Lengkap:</strong><br>
                     ${roomData.paragraph}<br><br>
-                    <strong>🔑 Kata Kunci:</strong> ${roomData.keyword.word}
+                    <strong>Kata Kunci:</strong> ${roomData.keyword.word}
                 `;
                 answerDiv.classList.add('show');
 
-                alert('✅ Jawaban telah ditampilkan ke semua peserta!');
+                alert('✅ Jawaban telah ditampilkan ke semua player!');
             } catch (error) {
                 console.error('Error showing answer:', error);
                 alert('❌ Gagal menampilkan jawaban.');
@@ -1114,13 +2413,17 @@
         }
 
         async function closeRoom() {
-            if (!currentRoomCode) return;
+            if (!currentRoomCode || !isFirebaseConnected) return;
 
             if (confirm('⚠️ Apakah Anda yakin ingin menutup room ini?')) {
                 try {
-                    await Storage.delete(`room:${currentRoomCode}`, true);
+                    await database.ref(`rooms/${currentRoomCode}`).remove();
                     if (timerInterval) clearInterval(timerInterval);
                     alert('✅ Room berhasil ditutup!');
+                    if (playersListener) {
+                        database.ref(`rooms/${currentRoomCode}/players`).off('value', playersListener);
+                        playersListener = null;
+                    }
                     resetOperator();
                 } catch (error) {
                     console.error('Error closing room:', error);
@@ -1146,45 +2449,9 @@
             updateSelectedFonts();
         }
 
-        async function joinRoom() {
-            const roomCode = document.getElementById('roomCodeInput').value.trim().toUpperCase();
-
-            if (!roomCode || roomCode.length !== 6) {
-                alert('⚠️ Masukkan kode room yang valid (6 karakter)!');
-                return;
-            }
-
-            try {
-                const result = await Storage.get(`room:${roomCode}`, true);
-
-                if (!result) {
-                    alert('❌ Room tidak ditemukan! Periksa kembali kode room.');
-                    return;
-                }
-
-                const roomData = JSON.parse(result.value);
-
-                if (!roomData.active) {
-                    alert('❌ Room sudah ditutup!');
-                    return;
-                }
-
-                currentRoomCode = roomCode;
-                await displayUserRoom(roomCode, roomData); // Tambahkan await
-                startUserPolling();
-
-            } catch (error) {
-                console.error('Error joining room:', error);
-                alert('❌ Gagal join room. Silakan coba lagi.');
-            }
-        }
-
-        // Tambahkan fungsi ini untuk download SOAL sebagai PDF
         async function downloadSoalAsPDF() {
             try {
                 const { jsPDF } = window.jspdf;
-
-                // Buat container sementara untuk PDF
                 const pdfContainer = document.createElement('div');
                 pdfContainer.style.position = 'absolute';
                 pdfContainer.style.left = '-9999px';
@@ -1195,47 +2462,51 @@
                 pdfContainer.style.fontFamily = 'Poppins, sans-serif';
                 document.body.appendChild(pdfContainer);
 
-                // Get room data
-                const result = await Storage.get(`room:${currentRoomCode}`, true);
-                const roomData = JSON.parse(result.value);
+                const snapshot = await database.ref(`rooms/${currentRoomCode}`).once('value');
+                const roomData = snapshot.val();
 
-                // Hitung waktu dalam format menit:detik
                 const minutes = Math.floor(roomData.timer / 60);
                 const seconds = roomData.timer % 60;
                 const timeFormat = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
-                // Buat konten PDF untuk SOAL
                 pdfContainer.innerHTML = `
-            <div style="text-align: center; margin-bottom: 30px;">
-                <h1 style="background-color: #fff; color: #3155e7; font-size: 36px; margin-bottom: 10px; font-weight: bold; font-family: 'Poppins', sans-serif;">Ragam Sandi Pramuka</h1>
-                <p style="color: #7f8c8d; font-size: 16px; font-family: 'Poppins', sans-serif;">Kode Room: <strong>${currentRoomCode}</strong></p>
-                <p style="color: #7f8c8d; font-size: 16px; font-family: 'Poppins', sans-serif;">Waktu: <strong>${timeFormat}</strong></p>
-            </div>
-            
-            <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; border: 2px solid #e0e0e0;">
-                <h2 style="color: #2c3e50; font-size: 22px; margin-bottom: 25px; text-align: center; font-family: 'Poppins', sans-serif;">📝 Soal:</h2>
-                <div id="pdfParagraph" style="font-size: 32px; line-height: 2; text-align: center; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; min-height: 100px;">
-                </div>
-            </div>
-            
-            <div style="margin-top: 40px; padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 5px;">
-                <p style="color: #856404; font-size: 14px; margin: 0; font-family: 'Poppins', sans-serif;">
-                    <strong>📌 Petunjuk:</strong> Terjemahkan soal di atas dari sandi pramuka ke huruf latin.
-                </p>
-            </div>
-        `;
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h1 style="color: #3155e7; font-size: 36px; margin-bottom: 10px; font-weight: bold;">Ragam Sandi Pramuka</h1>
+                        <p style="color: #7f8c8d; font-size: 16px;">Kode Room: <strong>${currentRoomCode}</strong></p>
+                        <p style="color: #7f8c8d; font-size: 16px;">Waktu: <strong>${timeFormat}</strong></p>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; border: 2px solid #e0e0e0;">
+                        <h2 style="color: #000; font-size: 22px; margin-bottom: 25px; text-align: center;">📝 Soal:</h2>
+                        <div id="pdfParagraph" style="font-size: 32px; line-height: 2; text-align: center; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; min-height: 100px;"></div>
+                    </div>
+                    <div style="margin-top: 40px; padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 5px;">
+                        <p style="color: #856404; font-size: 14px; margin: 0;">
+                            <strong>📌 Petunjuk:</strong> Terjemahkan soal di atas dari sandi pramuka ke huruf latin.
+                        </p>
+                    </div>
+                `;
 
-                // Render kata-kata dengan font sandi
                 const pdfParagraph = pdfContainer.querySelector('#pdfParagraph');
                 roomData.wordsWithFonts.forEach((item, index) => {
                     const span = document.createElement('span');
                     span.textContent = item.word;
-                    span.style.fontFamily = `'${item.font}', sans-serif`;
+
+                    // Jika menggunakan encoder (Sandi 1203), gunakan font normal dengan style berbeda
+                    if (item.isEncoded) {
+                        span.style.fontFamily = `'${item.font}', sans-serif`;
+                        span.style.fontWeight = '600';
+                        span.style.letterSpacing = '2px';
+                        span.style.color = '#000';
+                        span.classList.add('encoded');
+                    } else {
+                        span.style.fontFamily = `'${item.font}', sans-serif`;
+                    }
+
                     span.style.display = 'inline-block';
                     span.style.padding = '4px 8px';
                     span.style.margin = '2px';
 
-                    if (roomData.showHighlight && index === roomData.keyword.index) { // TAMBAHKAN roomData.showHighlight
+                    if (roomData.showHighlight && index === roomData.keyword.index) {
                         span.style.background = '#f39c12';
                         span.style.color = 'white';
                         span.style.padding = '8px 15px';
@@ -1246,13 +2517,9 @@
                     pdfParagraph.appendChild(span);
                 });
 
-                // PENTING: Tunggu semua fonts ter-load
                 await document.fonts.ready;
-
-                // Tambahan waktu tunggu untuk memastikan fonts benar-benar ter-render
                 await new Promise(resolve => setTimeout(resolve, 1000));
 
-                // Convert to canvas dengan kualitas tinggi dan letterRendering
                 const canvas = await html2canvas(pdfContainer, {
                     scale: 3,
                     useCORS: true,
@@ -1260,17 +2527,9 @@
                     logging: false,
                     backgroundColor: '#ffffff',
                     windowWidth: 800,
-                    windowHeight: pdfContainer.scrollHeight,
-                    onclone: function (clonedDoc) {
-                        // Pastikan fonts di-load di cloned document
-                        const clonedContainer = clonedDoc.querySelector('#pdfParagraph');
-                        if (clonedContainer) {
-                            clonedContainer.style.visibility = 'visible';
-                        }
-                    }
+                    windowHeight: pdfContainer.scrollHeight
                 });
 
-                // Create PDF
                 const imgData = canvas.toDataURL('image/png', 1.0);
                 const pdf = new jsPDF({
                     orientation: 'portrait',
@@ -1279,15 +2538,13 @@
                     compress: true
                 });
 
-                const imgWidth = 210; // A4 width in mm
-                const pageHeight = 297; // A4 height in mm
+                const imgWidth = 210;
+                const pageHeight = 297;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-                // Jika tinggi melebihi satu halaman, tambahkan halaman baru
                 if (imgHeight > pageHeight) {
                     let heightLeft = imgHeight;
                     let position = 0;
-
                     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
                     heightLeft -= pageHeight;
 
@@ -1301,18 +2558,60 @@
                     pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
                 }
 
-                // Download PDF dengan nama file yang jelas
                 const timestamp = new Date().toISOString().split('T')[0];
                 pdf.save(`Soal_Sandi_${currentRoomCode}_${timestamp}.pdf`);
-
-                // Hapus container sementara
                 document.body.removeChild(pdfContainer);
-
                 alert('✅ Soal berhasil didownload sebagai PDF!');
-
             } catch (error) {
                 console.error('Error generating PDF:', error);
                 alert('❌ Gagal membuat PDF: ' + error.message);
+            }
+        }
+
+        // ============================================
+        // USER FUNCTIONS
+        // ============================================
+        async function joinRoom() {
+            unlockAudio();
+            const roomCode = document.getElementById('roomCodeInput').value.trim().toUpperCase();
+
+            if (!isFirebaseConnected) {
+                alert('⚠️ Tidak terhubung ke Firebase! Periksa koneksi internet Anda.');
+                return;
+            }
+
+            if (!roomCode || roomCode.length !== 6) {
+                alert('⚠️ Masukkan kode room yang valid (6 karakter)!');
+                return;
+            }
+
+            try {
+                const roomRef = database.ref(`rooms/${roomCode}`);
+                const snapshot = await roomRef.once('value');
+                const roomData = snapshot.val();
+
+                if (!roomData) {
+                    alert('❌ Room tidak ditemukan! Periksa kembali kode room.');
+                    return;
+                }
+
+                if (!roomData.active) {
+                    alert('❌ Room sudah ditutup!');
+                    return;
+                }
+
+                if (roomData.timerStarted) {
+                    alert('❌ Room sedang berlangsung! Anda tidak dapat bergabung di tengah permainan.');
+                    return;
+                }
+
+                currentRoomCode = roomCode;
+                await displayUserRoom(roomCode, roomData);
+                startUserListener();
+                alert('✅ Berhasil join room!');
+            } catch (error) {
+                console.error('Error joining room:', error);
+                alert('❌ Gagal join room. Silakan coba lagi.');
             }
         }
 
@@ -1320,55 +2619,129 @@
             document.querySelector('#userSection .control-section').style.display = 'none';
             document.getElementById('roomJoinedDisplay').style.display = 'block';
             document.getElementById('userRoomCodeDisplay').textContent = roomCode;
-
-            await updateUserDisplay(roomData); // Tambahkan await
+            await updateUserDisplay(roomData);
         }
 
         async function updateUserDisplay(roomData) {
-            // Update paragraph
             const display = document.getElementById('userParagraphDisplay');
-            display.innerHTML = '';
 
-            // Tunggu fonts ter-load
-            await document.fonts.ready;
+            // Jika timer sudah berakhir, sembunyikan soal
+            if (roomData.timerEnded) {
+                display.style.display = 'none';
+                document.getElementById('userDownloadButton').style.display = 'block';
 
-            roomData.wordsWithFonts.forEach((item, index) => {
-                const span = document.createElement('span');
-                span.className = 'word';
-                if (roomData.showHighlight && index === roomData.keyword.index) {
-                    span.classList.add('highlight');
-                }
-                span.textContent = item.word;
-                span.style.fontFamily = `"${item.font}", sans-serif`; // Tambahkan quotes
-                span.style.fontSize = '1em';
-                span.style.fontDisplay = 'block';
-                display.appendChild(span);
-            });
-
-            // Update timer
-            if (roomData.timerStarted) {
-                if (!roomData.timerEnded) {
-                    const elapsed = Math.floor((Date.now() - roomData.timerStartTime) / 1000);
-                    const timeLeft = Math.max(0, roomData.timer - elapsed);
-                    updateUserTimer(timeLeft);
-                } else {
-                    const timerDisplay = document.getElementById('userTimerDisplay');
-                    timerDisplay.textContent = '⏰ Waktu Habis!';
-                    timerDisplay.classList.remove('warning');
-                }
             } else {
+                display.style.display = 'flex';
+                display.innerHTML = '';
+
+                await document.fonts.ready;
+
+                roomData.wordsWithFonts.forEach((item, index) => {
+                    const span = document.createElement('span');
+                    span.className = 'word';
+                    if (roomData.showHighlight && index === roomData.keyword.index) {
+                        span.classList.add('highlight');
+                    }
+                    span.textContent = item.word;
+
+                    if (item.isEncoded) {
+                        span.style.fontFamily = `"${item.font}", sans-serif`;
+                        span.style.fontWeight = '600';
+                        span.style.letterSpacing = '2px';
+                        span.style.color = '#000';
+                        span.classList.add('encoded');
+                    } else {
+                        span.style.fontFamily = `"${item.font}", sans-serif`;
+                    }
+
+                    span.style.fontSize = '1em';
+                    span.style.fontDisplay = 'block';
+                    display.appendChild(span);
+                });
+            }
+
+            if (roomData.timerStarted && !roomData.timerEnded) {
+                if (userTimerInterval) clearInterval(userTimerInterval);
+
+                const startTime = roomData.timerStartTime;
+                const totalTime = roomData.timerDuration || roomData.timer;
+
+                // Update timer setiap detik dengan sinkronisasi server
+                userTimerInterval = setInterval(async () => {
+                    const serverTimeRef = database.ref('.info/serverTimeOffset');
+                    const offsetSnap = await serverTimeRef.once('value');
+                    const offset = offsetSnap.val() || 0;
+                    const now = Date.now() + offset;
+
+                    const elapsed = Math.floor((now - startTime) / 1000);
+                    const timeLeft = Math.max(0, totalTime - elapsed);
+
+                    updateUserTimer(timeLeft);
+
+                    const timerDisplay = document.getElementById('userTimerDisplay');
+                    if (timeLeft <= 10 && timeLeft > 0) {
+                        timerDisplay.classList.add('warning');
+                    }
+
+                    if (timeLeft <= 0) {
+                        clearInterval(userTimerInterval);
+                        timerDisplay.textContent = 'Waktu Habis!';
+                        timerDisplay.classList.remove('warning');
+
+                        // PENTING: Pastikan audio di-play
+                        console.log('⏰ Timer ended (user), playing timeout sound...');
+                        setTimeout(() => {
+                            playTimeoutSound();
+                        }, 100); // Delay sedikit untuk memastikan UI sudah update
+                    }
+                }, 1000);
+
+                // Initial update
+                const now = Date.now();
+                const elapsed = Math.floor((now - startTime) / 1000);
+                const timeLeft = Math.max(0, totalTime - elapsed);
+                updateUserTimer(timeLeft);
+
+            } else if (roomData.timerEnded) {
+                if (userTimerInterval) clearInterval(userTimerInterval);
+                const timerDisplay = document.getElementById('userTimerDisplay');
+                timerDisplay.textContent = 'Waktu Habis!';
+                timerDisplay.classList.remove('warning');
+            } else {
+                if (userTimerInterval) clearInterval(userTimerInterval);
                 updateUserTimer(roomData.timer);
             }
 
-            // Show answer if operator has revealed it
             if (roomData.showAnswer) {
                 const answerDiv = document.getElementById('userAnswerDisplay');
                 answerDiv.innerHTML = `
-            <strong>📝 Jawaban Lengkap:</strong><br>
+            <strong>Jawaban Lengkap:</strong><br>
             ${roomData.paragraph}<br><br>
-            <strong>🔑 Kata Kunci:</strong> ${roomData.keyword.word}
+            <strong>Kata Kunci:</strong> ${roomData.keyword.word}
         `;
                 answerDiv.classList.add('show');
+            }
+
+            const answerSection = document.getElementById('answerInputSection');
+            if (roomData.timerStarted && !roomData.showAnswer) {
+                answerSection.style.display = 'block';
+
+                // Create inputs if not exist OR if wordAnswers is empty
+                if (document.getElementById('wordInputsGrid').children.length === 0 || wordAnswers.length === 0) {
+                    createWordInputs(roomData);
+                }
+
+                if (roomData.timerEnded) {
+                    disableAllInputs();
+                }
+            } else if (roomData.showAnswer) {
+                answerSection.style.display = 'block';
+                if (wordAnswers.length === 0) {
+                    createWordInputs(roomData);
+                }
+                disableAllInputs();
+            } else {
+                answerSection.style.display = 'none';
             }
         }
 
@@ -1385,44 +2758,167 @@
             }
         }
 
-        function startUserPolling() {
-            if (userPollingInterval) clearInterval(userPollingInterval);
+        function startUserListener() {
+            if (roomListener) roomListener.off();
 
-            userPollingInterval = setInterval(async () => {
-                if (!currentRoomCode) {
-                    clearInterval(userPollingInterval);
+            const roomRef = database.ref(`rooms/${currentRoomCode}`);
+
+            roomListener = roomRef.on('value', (snapshot) => {
+                const roomData = snapshot.val();
+
+                if (!roomData) {
+                    alert('❌ Room telah ditutup oleh operator!');
+                    leaveRoom();
                     return;
                 }
 
-                try {
-                    const result = await Storage.get(`room:${currentRoomCode}`, true);
-
-                    if (!result) {
-                        clearInterval(userPollingInterval);
-                        alert('❌ Room telah ditutup oleh operator!');
-                        leaveRoom();
-                        return;
-                    }
-
-                    const roomData = JSON.parse(result.value);
-
-                    if (!roomData.active) {
-                        clearInterval(userPollingInterval);
-                        alert('❌ Room telah ditutup oleh operator!');
-                        leaveRoom();
-                        return;
-                    }
-
-                    updateUserDisplay(roomData);
-
-                } catch (error) {
-                    console.error('Error polling room data:', error);
+                if (!roomData.active) {
+                    alert('❌ Room telah ditutup oleh operator!');
+                    leaveRoom();
+                    return;
                 }
-            }, 1000);
+
+                updateUserDisplay(roomData);
+            });
+        }
+
+        async function downloadUserSoalAsPDF() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const pdfContainer = document.createElement('div');
+                pdfContainer.style.position = 'absolute';
+                pdfContainer.style.left = '-9999px';
+                pdfContainer.style.top = '0';
+                pdfContainer.style.width = '800px';
+                pdfContainer.style.backgroundColor = 'white';
+                pdfContainer.style.padding = '40px';
+                pdfContainer.style.fontFamily = 'Poppins, sans-serif';
+                document.body.appendChild(pdfContainer);
+
+                const snapshot = await database.ref(`rooms/${currentRoomCode}`).once('value');
+                const roomData = snapshot.val();
+
+                const minutes = Math.floor(roomData.timer / 60);
+                const seconds = roomData.timer % 60;
+                const timeFormat = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                pdfContainer.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h1 style="color: #3155e7; font-size: 36px; margin-bottom: 10px; font-weight: bold;">Ragam Sandi Pramuka</h1>
+                        <p style="color: #7f8c8d; font-size: 16px;">Kode Room: <strong>${currentRoomCode}</strong></p>
+                        <p style="color: #7f8c8d; font-size: 16px;">Waktu: <strong>${timeFormat}</strong></p>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; border: 2px solid #e0e0e0;">
+                        <h2 style="color: #000; font-size: 22px; margin-bottom: 25px; text-align: center;">📝 Soal:</h2>
+                        <div id="pdfParagraph" style="font-size: 32px; line-height: 2; text-align: center; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; min-height: 100px;"></div>
+                    </div>
+                    <div style="margin-top: 40px; padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 5px;">
+                        <p style="color: #856404; font-size: 14px; margin: 0;">
+                            <strong>📌 Petunjuk:</strong> Terjemahkan soal di atas dari sandi pramuka ke huruf latin.
+                        </p>
+                    </div>
+                `;
+
+                const pdfParagraph = pdfContainer.querySelector('#pdfParagraph');
+                roomData.wordsWithFonts.forEach((item, index) => {
+                    const span = document.createElement('span');
+                    span.textContent = item.word;
+
+                    // Jika menggunakan encoder (Sandi 1203), gunakan font normal dengan style berbeda
+                    if (item.isEncoded) {
+                        span.style.fontFamily = `'${item.font}', sans-serif`;
+                        span.style.fontWeight = '600';
+                        span.style.letterSpacing = '2px';
+                        span.style.color = '#000';
+                        span.classList.add('encoded');
+                    } else {
+                        span.style.fontFamily = `'${item.font}', sans-serif`;
+                    }
+
+                    span.style.display = 'inline-block';
+                    span.style.padding = '4px 8px';
+                    span.style.margin = '2px';
+
+                    if (roomData.showHighlight && index === roomData.keyword.index) {
+                        span.style.background = '#f39c12';
+                        span.style.color = 'white';
+                        span.style.padding = '8px 15px';
+                        span.style.borderRadius = '8px';
+                        span.style.fontWeight = 'bold';
+                    }
+
+                    pdfParagraph.appendChild(span);
+                });
+
+                await document.fonts.ready;
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                const canvas = await html2canvas(pdfContainer, {
+                    scale: 3,
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    windowWidth: 800,
+                    windowHeight: pdfContainer.scrollHeight
+                });
+
+                const imgData = canvas.toDataURL('image/png', 1.0);
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4',
+                    compress: true
+                });
+
+                const imgWidth = 210;
+                const pageHeight = 297;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                if (imgHeight > pageHeight) {
+                    let heightLeft = imgHeight;
+                    let position = 0;
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+                    heightLeft -= pageHeight;
+
+                    while (heightLeft > 0) {
+                        position = heightLeft - imgHeight;
+                        pdf.addPage();
+                        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+                        heightLeft -= pageHeight;
+                    }
+                } else {
+                    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+                }
+
+                const timestamp = new Date().toISOString().split('T')[0];
+                pdf.save(`Soal_Sandi_${currentRoomCode}_${timestamp}.pdf`);
+                document.body.removeChild(pdfContainer);
+                alert('✅ Soal berhasil didownload sebagai PDF!');
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('❌ Gagal membuat PDF: ' + error.message);
+            }
         }
 
         function leaveRoom() {
-            if (userPollingInterval) clearInterval(userPollingInterval);
+            // Remove player from database
+            if (currentRoomCode && currentUserId) {
+                database.ref(`rooms/${currentRoomCode}/players/${currentUserId}`).remove();
+            }
+
+            currentUsername = null;
+            currentUserId = null;
+
+            if (userTimerInterval) {
+                clearInterval(userTimerInterval);
+                userTimerInterval = null;
+            }
+
+            if (roomListener) {
+                database.ref(`rooms/${currentRoomCode}`).off('value', roomListener);
+                roomListener = null;
+            }
             currentRoomCode = null;
 
             document.querySelector('#userSection .control-section').style.display = 'block';
@@ -1431,6 +2927,18 @@
             document.getElementById('userAnswerDisplay').classList.remove('show');
             document.getElementById('userAnswerDisplay').innerHTML = '';
             document.getElementById('userTimerDisplay').classList.remove('warning');
+            document.getElementById('userDownloadButton').style.display = 'none';
+            document.getElementById('userParagraphDisplay').style.display = 'flex';
+
+            resetAnswerInput(); // Ini akan enable kembali inputs
+            document.getElementById('answerInputSection').style.display = 'none';
+        }
+
+        function disableAllInputs() {
+            const inputs = document.querySelectorAll('.word-input');
+            inputs.forEach(input => {
+                input.disabled = true;
+            });
         }
 
         // Initialize on page load
